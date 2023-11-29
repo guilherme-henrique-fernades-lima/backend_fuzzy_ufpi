@@ -10,6 +10,7 @@ class FuzzySystem():
     ano = 5
     tspan = np.linspace(0, ano * 360, ano * 360 + 1)
 
+    @staticmethod
     def EDO_HVC_Pfuzzy(t, P, simulador):  
 
         # PARAMETROS
@@ -131,10 +132,7 @@ class FuzzySystem():
 
         # Sistema Fuzzy e Simulação
         dados_var = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18])
-        simulador = ctrl.ControlSystemSimulation(dados_var)
-
-        # Condições iniciais
-        initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0]
+        simulador = ctrl.ControlSystemSimulation(dados_var)       
 
         #options = {'atol': 1e-6, 'rtol': 1e-6}
         # Agora, chame solve_ivp passando simulador como argumento
@@ -149,14 +147,14 @@ class FuzzySystem():
                             )
 
         # Obter os resultados
-        #t = solution.t
-        P = solution.y.T 
+        #t = solution.t        
+        P = solution.y.T         
 
         return P
 
 if __name__ == '__main__':
     from integration.core.usecases.fuzzy import FuzzySystem
     fuzzyfy = FuzzySystem()
-    initial_conditions = []
+    initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0]
     fuzzyfy.execute(initial_conditions)
 
