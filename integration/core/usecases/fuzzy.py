@@ -3,7 +3,6 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from scipy.integrate import solve_ivp
 
-
 class FuzzySystem():
 
     # TEMPO
