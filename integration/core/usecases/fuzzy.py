@@ -3,11 +3,7 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from scipy.integrate import solve_ivp
 
-class FuzzySystem():
-
-    # TEMPO
-    ano = 5
-    tspan = np.linspace(0, ano * 360, ano * 360 + 1)
+class FuzzySystem():   
 
     @staticmethod
     def EDO_HVC_Pfuzzy(t, P, simulador):  
@@ -74,7 +70,11 @@ class FuzzySystem():
         
         return dPdt
 
-    def execute(self, initial_conditions):
+    def execute(self, initial_conditions, tempo):        
+
+         # TEMPO
+        ano = int(tempo)
+        tspan = np.linspace(0, ano * 360, ano * 360 + 1)
 
         fuzzy = FuzzySystem()
 
@@ -136,9 +136,9 @@ class FuzzySystem():
         #options = {'atol': 1e-6, 'rtol': 1e-6}
         # Agora, chame solve_ivp passando simulador como argumento
         solution = solve_ivp(fun=lambda t, P: fuzzy.EDO_HVC_Pfuzzy(t, P, simulador),
-                            t_span=(fuzzy.tspan[0], fuzzy.tspan[-1]),
+                            t_span=(tspan[0], tspan[-1]),
                             y0=initial_conditions,
-                            t_eval=fuzzy.tspan,
+                            t_eval=tspan,
                             args=(),
                             method='RK45', #Método Runge-Kutta
                             vectorized=False,
