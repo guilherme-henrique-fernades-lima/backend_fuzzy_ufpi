@@ -147,8 +147,14 @@ class FuzzySystem():
                             )
 
         # Obter os resultados
-        #t = solution.t        
-        P = solution.y.T         
+        #T = solution.t        
+        P = solution.y.T   
+
+        # Caso queira retornar o T
+        # data = {
+        #     'p':P,
+        #     't':T
+        # }     
 
         return P
 

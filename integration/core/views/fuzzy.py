@@ -20,8 +20,7 @@ class FuzzyViewSet(viewsets.ModelViewSet):
     #     return serializer
 
     def list(self, request):
-
-        print('Entrou dentro do metodo fuzzy')      
+           
         # http://127.0.0.1:8005/integration/fuzzy
 
         try:       
