@@ -149,7 +149,7 @@ class FuzzySystem():
         #T = solution.t        
         P = solution.y.T   
 
-        # Caso queira retornar o T
+        # Caso queira retornar o T em formato de objeto
         # data = {
         #     'p':P,
         #     't':T
@@ -160,6 +160,6 @@ class FuzzySystem():
 if __name__ == '__main__':
     from integration.core.usecases.fuzzy import FuzzySystem
     fuzzyfy = FuzzySystem()
-    initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0]
+    initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0] #Condição padrão inicial
     fuzzyfy.execute(initial_conditions)
 
