@@ -6,7 +6,7 @@ from scipy.integrate import solve_ivp
 class FuzzySystem():   
 
     @staticmethod
-    def EDO_HVC_Pfuzzy(t, P, simulador):  
+    def EDO_HVC_Pfuzzy(t, P, simulador, gamma_c):  
 
         # PARAMETROS
         b = 1e-2
@@ -64,15 +64,17 @@ class FuzzySystem():
             alpha_h * P[0] * (P[3] / (P[2] + P[3])) - gamma_h * P[1] - (mu_h + d_h) * P[1],
             var_value - beta_h * P[2] * (P[1] / (P[0] + P[1])) - beta_c * P[2] * (P[5] / (P[4] + P[5])) + mu_f * P[3],
             beta_h * P[2] * (P[1] / (P[0] + P[1])) + beta_c * P[2] * (P[5] / (P[4] + P[5])) - mu_f * P[3],
-            r_c * P[4] * (1 - (P[4] + P[5]) / k_c) - alpha_c * P[4] * (P[3] / (P[2] + P[3])) - mu_c * P[4],
-            alpha_c * P[4] * (P[3] / (P[2] + P[3])) - (mu_c + d_c) * P[5]
-        ]
-        
+            r_c * P[4] * (1 - (P[4] + P[5] + P[6] + P[7]) / k_c) - alpha_c * P[4] * (P[3] / (P[2] + P[3])) - mu_c * P[4] - gamma_c * P[4],
+            alpha_c * P[4] * (P[3] / (P[2] + P[3])) - (mu_c + d_c) * P[5] - gamma_c * P[5],
+            gamma_c * P[4] - mu_c * P[6],
+            gamma_c * P[5] - (mu_c + d_c) * P[7]
+        ] 
+
         return dPdt
 
-    def execute(self, initial_conditions, tempo):        
+    def execute(self, initial_conditions, tempo, gamma_c):        
 
-         # TEMPO
+        # TEMPO
         ano = int(tempo)
         tspan = np.linspace(0, ano * 360, ano * 360 + 1)
 
@@ -104,7 +106,7 @@ class FuzzySystem():
         variacao['medio_negativo'] = fuzz.trimf(variacao.universe, [-0.001125, -0.00075, -0.000375])
         variacao['alto_negativo'] = fuzz.trapmf(variacao.universe, [-0.02, -0.0015, -0.001125, -0.00075])
 
-        # Descomentar caso queria visualizar as funções de pertinência para cada variável
+        # Descomentar caso queria visualizar as funções de pertinência para cada variável ao rodar o script no terminal
         # flebotominios.view()
         # cond_ambiental.view()
         # variacao.view()
@@ -133,33 +135,24 @@ class FuzzySystem():
         dados_var = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9, rule10, rule11, rule12, rule13, rule14, rule15, rule16, rule17, rule18])
         simulador = ctrl.ControlSystemSimulation(dados_var)       
 
-        #options = {'atol': 1e-6, 'rtol': 1e-6}
-        # Agora, chame solve_ivp passando simulador como argumento
-        solution = solve_ivp(fun=lambda t, P: fuzzy.EDO_HVC_Pfuzzy(t, P, simulador),
-                            t_span=(tspan[0], tspan[-1]),
-                            y0=initial_conditions,
-                            t_eval=tspan,
-                            args=(),
-                            method='RK45', #Método Runge-Kutta
-                            vectorized=False,
-                            #options=options
-                            )
+        solution = solve_ivp(
+            fun=self.EDO_HVC_Pfuzzy,
+            t_span=(tspan[0], tspan[-1]),
+            y0=initial_conditions,
+            t_eval=tspan,
+            args=(simulador, gamma_c),  # Passa simulador e gamma_c
+            method='RK45',
+            vectorized=False,
+        )
 
-        # Obter os resultados
-        #T = solution.t        
-        P = solution.y.T   
-
-        # Caso queira retornar o T em formato de objeto
-        # data = {
-        #     'p':P,
-        #     't':T
-        # }     
+        # Obter os resultados               
+        P = solution.y.T           
 
         return P
 
 if __name__ == '__main__':
     from integration.core.usecases.fuzzy import FuzzySystem
     fuzzyfy = FuzzySystem()
-    initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0] #Condição padrão inicial
+    initial_conditions = [0.7, 0, 0.24, 0.01, 0.6, 0, 0, 0] # Condição padrão inicial para teste
     fuzzyfy.execute(initial_conditions)
 
