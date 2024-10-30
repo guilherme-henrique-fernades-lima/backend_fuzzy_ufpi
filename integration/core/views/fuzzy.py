@@ -14,13 +14,6 @@ class FuzzyViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
            
-        # http://127.0.0.1:8005/integration/fuzzy
-        # http://127.0.0.1:8005/integration/fuzzy/?tempo=5&humanos_suscetiveis=0.7&humanos_infectados=0&flebotomineos_suscetiveis=0.24&flebotomineos_infectados=0.01&caes_suscetiveis=0.6&caes_infectados=0
-
-        '''
-        Condição inicial padrão da aplicação:
-        initial_condition = [0.7, 0, 0.24, 0.01, 0.6, 0]         
-        '''    
         try:       
 
             humanos_suscetiveis = request.GET.get("humanos_suscetiveis", None)
